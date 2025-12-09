@@ -1,0 +1,67 @@
+{
+  "name": "nxt-gen",
+  "version": "1.0.1",
+  "description": "The ultimate Next.js scaffold CLI generator. Customize your stack with Prisma, React Query, Shadcn, HeroUI, and more in seconds.",
+  "main": "dist/index.js",
+  "bin": {
+    "cnp": "./bin/cnp"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PrabothCharith/Nextjs-Template-nxt-gen.git"
+  },
+  "keywords": [
+    "nextjs",
+    "cli",
+    "template",
+    "generator",
+    "scaffold",
+    "prisma",
+    "react-query",
+    "shadcn",
+    "heroui",
+    "boilerplate",
+    "starter",
+    "automation",
+    "productivity",
+    "dev-tools",
+    "cli-tool",
+    "full-stack",
+    "typescript",
+    "tanstack",
+    "postgres",
+    "sqlite"
+  ],
+  "author": "Praboth Charith (https://praboth.me)",
+  "license": "MIT",
+  "files": [
+    "dist",
+    "bin",
+    "README.md"
+  ],
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/PrabothCharith/Nextjs-Template-nxt-gen/issues"
+  },
+  "homepage": "https://github.com/PrabothCharith/Nextjs-Template-nxt-gen#readme",
+  "dependencies": {
+    "chalk": "^5.6.2",
+    "commander": "^14.0.2",
+    "execa": "^9.6.1",
+    "fs-extra": "^11.3.2",
+    "handlebars": "^4.7.8",
+    "ora": "^9.0.0",
+    "prompts": "^2.4.2"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^24.10.2",
+    "@types/prompts": "^2.4.9",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
