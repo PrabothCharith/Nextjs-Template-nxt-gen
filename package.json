@@ -1,6 +1,6 @@
 {
   "name": "nxt-gen",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "The ultimate Next.js scaffold CLI generator. Customize your stack with Prisma, React Query, Shadcn, HeroUI, and more in seconds.",
   "main": "dist/index.js",
   "bin": {
@@ -41,7 +41,9 @@
   "files": [
     "dist",
     "bin",
-    "README.md"
+    "README.md",
+    "LICENSE.md",
+    "SECURITY.md"
   ],
   "type": "commonjs",
   "bugs": {
