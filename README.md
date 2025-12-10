@@ -1,7 +1,7 @@
-# nxt-gen: Next.js CLI
+# nxt-gen-cli: Next.js CLI
 
-![npm version](https://img.shields.io/npm/v/nxt-gen?style=flat-square)
-![license](https://img.shields.io/npm/l/nxt-gen?style=flat-square)
+![npm version](https://img.shields.io/npm/v/nxt-gen-cli?style=flat-square)
+![license](https://img.shields.io/npm/l/nxt-gen-cli?style=flat-square)
 
 A powerful, interactive CLI tool to scaffold production-ready Next.js applications custom features.
 
@@ -23,7 +23,7 @@ Stop copying and pasting boilerplate code. Generate a custom stack in seconds.
 Run the generator directly with `npx`:
 
 ```bash
-npx nxt-gen@latest my-app
+npx nxt-gen-cli@latest my-app
 ```
 
 Follow the interactive prompts to choose your stack!
@@ -33,7 +33,7 @@ Follow the interactive prompts to choose your stack!
 Alternatively, install it globally:
 
 ```bash
-npm install -g nxt-gen
+npm install -g nxt-gen-cli
 ```
 
 Then generate a project anywhere:
@@ -49,7 +49,7 @@ cnp my-new-project
 Just run the command without flags:
 
 ```bash
-npx nxt-gen@latest my-app
+npx nxt-gen-cli@latest my-app
 ```
 
 You will be asked about:
@@ -67,7 +67,7 @@ Perfect for scripts or power users:
 
 ```bash
 # Create a full-stack app with all features
-npx nxt-gen@latest my-app --prisma --react-query --axios --ui both --framer-motion --lucide --examples both
+npx nxt-gen-cli@latest my-app --prisma --react-query --axios --ui both --framer-motion --lucide --examples both
 ```
 
 | Flag | Description |
