@@ -246,6 +246,23 @@ export const scaffoldProject = async (
           );
           playwrightSpinner.succeed("Playwright browsers installed");
         }
+
+        if (config.ui === "shadcn" || config.ui === "both") {
+          const shadcnSpinner = ora("Initializing Shadcn UI...").start();
+          const dlx = getDlxCommand(pm);
+          await runCommand(
+            dlx.command,
+            [
+              ...dlx.args,
+              "shadcn@latest",
+              "init",
+              "--yes",
+              "--defaults",
+            ],
+            projectPath
+          );
+          shadcnSpinner.succeed("Shadcn UI initialized");
+        }
       } catch (error) {
         spinner.fail("Installation failed");
         console.log(chalk.red("\nError:"), error);
