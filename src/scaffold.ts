@@ -65,7 +65,7 @@ import prompts from "prompts";
 
 export const scaffoldProject = async (
   projectName: string,
-  config: ProjectConfig
+  config: ProjectConfig,
 ) => {
   const projectPath = path.resolve(process.cwd(), projectName);
   // Use the package manager from config, or auto-detect as fallback
@@ -76,16 +76,16 @@ export const scaffoldProject = async (
   if (await fs.pathExists(projectPath)) {
     console.log(
       chalk.red(
-        `\nError: Directory "${projectName}" already exists. Please choose a different name or remove the existing directory.\n`
-      )
+        `\nError: Directory "${projectName}" already exists. Please choose a different name or remove the existing directory.\n`,
+      ),
     );
     process.exit(1);
   }
 
   console.log(
     chalk.blue(
-      `\nInitializing Next.js project in ${projectName} using ${pm}...\n`
-    )
+      `\nInitializing Next.js project in ${projectName} using ${pm}...\n`,
+    ),
   );
 
   const { command: dlxCmd, args: dlxArgs } = getDlxCommand(pm);
@@ -107,7 +107,7 @@ export const scaffoldProject = async (
       "--no-turbopack",
       "--no-react-compiler", // Suppress React Compiler prompt
     ],
-    process.cwd()
+    process.cwd(),
   );
 
   await cleanupDefaultFiles(projectPath);
@@ -138,8 +138,8 @@ export const scaffoldProject = async (
     path.join(projectPath, ".env.example"),
     envExample(
       config.orm,
-      config.examples === "auth" || config.examples === "both"
-    )
+      config.examples === "auth" || config.examples === "both",
+    ),
   );
 
   if (config.husky) await setupQuality(projectPath, deps);
@@ -168,14 +168,14 @@ export const scaffoldProject = async (
       console.log(
         chalk.white("  Dependencies:"),
         regularDeps.slice(0, 5).join(", ") +
-        (regularDeps.length > 5 ? ` +${regularDeps.length - 5} more` : "")
+          (regularDeps.length > 5 ? ` +${regularDeps.length - 5} more` : ""),
       );
     }
     if (devDeps.length > 0) {
       console.log(
         chalk.white("  Dev Dependencies:"),
         devDeps.slice(0, 5).join(", ") +
-        (devDeps.length > 5 ? ` +${devDeps.length - 5} more` : "")
+          (devDeps.length > 5 ? ` +${devDeps.length - 5} more` : ""),
       );
     }
 
@@ -192,13 +192,13 @@ export const scaffoldProject = async (
         {
           onCancel: () => {
             console.log(
-              chalk.yellow("\nSkipping installation. To install later:")
+              chalk.yellow("\nSkipping installation. To install later:"),
             );
             console.log(chalk.cyan(`  cd ${projectName}`));
             console.log(chalk.cyan(`  ${pm} install`));
             process.exit(0);
           },
-        }
+        },
       );
       shouldInstall = response.shouldInstall;
     }
@@ -236,13 +236,13 @@ export const scaffoldProject = async (
 
         if (config.playwright) {
           const playwrightSpinner = ora(
-            "Installing Playwright browsers..."
+            "Installing Playwright browsers...",
           ).start();
           const dlx = getDlxCommand(pm);
           await runCommand(
             dlx.command,
             [...dlx.args, "playwright", "install", "--with-deps"],
-            projectPath
+            projectPath,
           );
           playwrightSpinner.succeed("Playwright browsers installed");
         }
@@ -252,14 +252,8 @@ export const scaffoldProject = async (
           const dlx = getDlxCommand(pm);
           await runCommand(
             dlx.command,
-            [
-              ...dlx.args,
-              "shadcn@latest",
-              "init",
-              "--yes",
-              "--defaults",
-            ],
-            projectPath
+            [...dlx.args, "shadcn@latest", "init", "--yes", "--defaults"],
+            projectPath,
           );
           shadcnSpinner.succeed("Shadcn UI initialized");
         }
@@ -268,9 +262,15 @@ export const scaffoldProject = async (
         console.log(chalk.red("\nError:"), error);
 
         console.log(chalk.yellow("\nTroubleshooting Tips:"));
-        console.log(chalk.white("  • If you see 'EACCES' or permission errors, try running:"));
+        console.log(
+          chalk.white(
+            "  • If you see 'EACCES' or permission errors, try running:",
+          ),
+        );
         console.log(chalk.cyan("    sudo chown -R $(whoami) ~/.npm"));
-        console.log(chalk.white("  • If you see 'EEXIST' or cache errors, try:"));
+        console.log(
+          chalk.white("  • If you see 'EEXIST' or cache errors, try:"),
+        );
         console.log(chalk.cyan("    npm cache clean --force"));
 
         console.log(chalk.yellow("\nYou can install dependencies manually:"));
@@ -290,112 +290,112 @@ export const scaffoldProject = async (
   console.log(
     boxen(
       chalk.green.bold(" SUCCESS! ") +
-      "\n\n" +
-      `Your Next.js project ${chalk.cyan.bold(
-        projectName
-      )} has been created!\n` +
-      chalk.gray("━".repeat(60)) +
-      "\n\n" +
-      chalk.yellow.bold(" Quick Start:\n") +
-      chalk.white(
-        `  ${chalk.cyan("1.")} cd ${chalk.magenta(projectName)}\n`
-      ) +
-      chalk.white(
-        `  ${chalk.cyan("2.")} ${chalk.magenta(
-          pm === "npm" ? "npm run dev" : pm + " dev"
-        )}\n`
-      ) +
-      chalk.white(
-        `  ${chalk.cyan("3.")} Open ${chalk.magenta(
-          "http://localhost:3000"
-        )}\n\n`
-      ) +
-      chalk.yellow.bold("📦 Useful Commands:\n") +
-      chalk.white(
-        `  ${chalk.cyan("Build:")}       ${chalk.magenta(
-          pm === "npm" ? "npm run build" : pm + " build"
-        )}\n`
-      ) +
-      chalk.white(
-        `  ${chalk.cyan("Lint:")}        ${chalk.magenta(
-          pm === "npm" ? "npm run lint" : pm + " lint"
-        )}\n`
-      ) +
-      (config.vitest
-        ? chalk.white(
-          `  ${chalk.cyan("Test:")}        ${chalk.magenta(
-            pm === "npm" ? "npm test" : pm + " test"
-          )}\n`
-        )
-        : "") +
-      (config.playwright
-        ? chalk.white(
-          `  ${chalk.cyan("E2E Test:")}    ${chalk.magenta(
-            pm === "npm" ? "npm run test:e2e" : pm + " test:e2e"
-          )}\n`
-        )
-        : "") +
-      (config.storybook
-        ? chalk.white(
-          `  ${chalk.cyan("Storybook:")}   ${chalk.magenta(
-            pm === "npm" ? "npm run storybook" : pm + " storybook"
-          )}\n`
-        )
-        : "") +
-      "\n" +
-      chalk.yellow.bold(" Documentation:\n") +
-      chalk.white(
-        `  ${chalk.cyan("•")} Check out ${chalk.magenta(
-          "README.md"
-        )} for detailed setup\n`
-      ) +
-      (config.orm === "prisma" || config.orm === "drizzle"
-        ? chalk.white(
-          `  ${chalk.cyan("•")} Configure ${chalk.magenta(
-            ".env"
-          )} for database connection\n`
-        )
-        : "") +
-      (config.auth !== "none"
-        ? chalk.white(
-          `  ${chalk.cyan("•")} Set up ${chalk.magenta(
-            config.auth === "next-auth" ? "NextAuth" : "Clerk"
-          )} environment variables\n`
-        )
-        : "") +
-      chalk.white(
-        `  ${chalk.cyan("•")} Review ${chalk.magenta(
-          ".env.example"
-        )} for all config options\n\n`
-      ) +
-      chalk.yellow.bold(" Pro Tips:\n") +
-      chalk.white(
-        `  ${chalk.cyan("•")} Star the repo: ${chalk.blue.underline(
-          "https://github.com/PrabothCharith/nxt-gen-cli.git"
-        )}\n`
-      ) +
-      chalk.white(
-        `  ${chalk.cyan("•")} Report issues or suggest features on GitHub\n`
-      ) +
-      chalk.white(
-        `  ${chalk.cyan(
-          "•"
-        )} Share your feedback to help improve nxt-gen!\n\n`
-      ) +
-      chalk.gray("━".repeat(60)) +
-      "\n" +
-      chalk.white("Happy coding! ") +
-      chalk.gray("Built by ") +
-      chalk.cyan.bold("Praboth Charith\n") +
-      chalk.blue.underline("https://praboth.me"),
+        "\n\n" +
+        `Your Next.js project ${chalk.cyan.bold(
+          projectName,
+        )} has been created!\n` +
+        chalk.gray("━".repeat(60)) +
+        "\n\n" +
+        chalk.yellow.bold(" Quick Start:\n") +
+        chalk.white(
+          `  ${chalk.cyan("1.")} cd ${chalk.magenta(projectName)}\n`,
+        ) +
+        chalk.white(
+          `  ${chalk.cyan("2.")} ${chalk.magenta(
+            pm === "npm" ? "npm run dev" : pm + " dev",
+          )}\n`,
+        ) +
+        chalk.white(
+          `  ${chalk.cyan("3.")} Open ${chalk.magenta(
+            "http://localhost:3000",
+          )}\n\n`,
+        ) +
+        chalk.yellow.bold("📦 Useful Commands:\n") +
+        chalk.white(
+          `  ${chalk.cyan("Build:")}       ${chalk.magenta(
+            pm === "npm" ? "npm run build" : pm + " build",
+          )}\n`,
+        ) +
+        chalk.white(
+          `  ${chalk.cyan("Lint:")}        ${chalk.magenta(
+            pm === "npm" ? "npm run lint" : pm + " lint",
+          )}\n`,
+        ) +
+        (config.vitest
+          ? chalk.white(
+              `  ${chalk.cyan("Test:")}        ${chalk.magenta(
+                pm === "npm" ? "npm test" : pm + " test",
+              )}\n`,
+            )
+          : "") +
+        (config.playwright
+          ? chalk.white(
+              `  ${chalk.cyan("E2E Test:")}    ${chalk.magenta(
+                pm === "npm" ? "npm run test:e2e" : pm + " test:e2e",
+              )}\n`,
+            )
+          : "") +
+        (config.storybook
+          ? chalk.white(
+              `  ${chalk.cyan("Storybook:")}   ${chalk.magenta(
+                pm === "npm" ? "npm run storybook" : pm + " storybook",
+              )}\n`,
+            )
+          : "") +
+        "\n" +
+        chalk.yellow.bold(" Documentation:\n") +
+        chalk.white(
+          `  ${chalk.cyan("•")} Check out ${chalk.magenta(
+            "README.md",
+          )} for detailed setup\n`,
+        ) +
+        (config.orm === "prisma" || config.orm === "drizzle"
+          ? chalk.white(
+              `  ${chalk.cyan("•")} Configure ${chalk.magenta(
+                ".env",
+              )} for database connection\n`,
+            )
+          : "") +
+        (config.auth !== "none"
+          ? chalk.white(
+              `  ${chalk.cyan("•")} Set up ${chalk.magenta(
+                config.auth === "next-auth" ? "NextAuth" : "Clerk",
+              )} environment variables\n`,
+            )
+          : "") +
+        chalk.white(
+          `  ${chalk.cyan("•")} Review ${chalk.magenta(
+            ".env.example",
+          )} for all config options\n\n`,
+        ) +
+        chalk.yellow.bold(" Pro Tips:\n") +
+        chalk.white(
+          `  ${chalk.cyan("•")} Star the repo: ${chalk.blue.underline(
+            "https://github.com/PrabothCharith/nxt-gen-cli.git",
+          )}\n`,
+        ) +
+        chalk.white(
+          `  ${chalk.cyan("•")} Report issues or suggest features on GitHub\n`,
+        ) +
+        chalk.white(
+          `  ${chalk.cyan(
+            "•",
+          )} Share your feedback to help improve nxt-gen!\n\n`,
+        ) +
+        chalk.gray("━".repeat(60)) +
+        "\n" +
+        chalk.white("Happy coding! ") +
+        chalk.gray("Built by ") +
+        chalk.cyan.bold("Praboth Charith\n") +
+        chalk.blue.underline("https://praboth.me"),
       {
         padding: 1,
         margin: 1,
         borderStyle: "round",
         borderColor: "green",
         align: "left",
-      }
-    )
+      },
+    ),
   );
 
   // Beautiful ASCII Art Header
@@ -404,71 +404,71 @@ export const scaffoldProject = async (
     chalk
       .hex("#eb5939")
       .bold(
-        "  ╔═════════════════════════════════════════════════════════════════════╗"
-      )
+        "  ╔═════════════════════════════════════════════════════════════════════╗",
+      ),
   );
   console.log(
     chalk
       .hex("#eb5939")
       .bold(
-        "  ║                                                                     ║"
-      )
+        "  ║                                                                     ║",
+      ),
   );
   console.log(
     chalk.hex("#eb5939").bold("  ║     ") +
-    chalk
-      .hex("#eb5939")
-      .bold("███╗   ██╗██╗  ██╗████████╗      ██████╗ ███████╗███╗   ██╗") +
-    chalk.hex("#eb5939").bold("     ║")
+      chalk
+        .hex("#eb5939")
+        .bold("███╗   ██╗██╗  ██╗████████╗      ██████╗ ███████╗███╗   ██╗") +
+      chalk.hex("#eb5939").bold("     ║"),
   );
   console.log(
     chalk.hex("#eb5939").bold("  ║     ") +
-    chalk
-      .hex("#eb5939")
-      .bold("████╗  ██║╚██╗██╔╝╚══██╔══╝     ██╔════╝ ██╔════╝████╗  ██║") +
-    chalk.hex("#eb5939").bold("     ║")
+      chalk
+        .hex("#eb5939")
+        .bold("████╗  ██║╚██╗██╔╝╚══██╔══╝     ██╔════╝ ██╔════╝████╗  ██║") +
+      chalk.hex("#eb5939").bold("     ║"),
   );
   console.log(
     chalk.hex("#eb5939").bold("  ║     ") +
-    chalk
-      .hex("#eb5939")
-      .bold("██╔██╗ ██║ ╚███╔╝    ██║        ██║  ███╗█████╗  ██╔██╗ ██║") +
-    chalk.hex("#eb5939").bold("     ║")
+      chalk
+        .hex("#eb5939")
+        .bold("██╔██╗ ██║ ╚███╔╝    ██║        ██║  ███╗█████╗  ██╔██╗ ██║") +
+      chalk.hex("#eb5939").bold("     ║"),
   );
   console.log(
     chalk.hex("#eb5939").bold("  ║     ") +
-    chalk
-      .hex("#eb5939")
-      .bold("██║╚██╗██║ ██╔██╗    ██║        ██║   ██║██╔══╝  ██║╚██╗██║") +
-    chalk.hex("#eb5939").bold("     ║")
+      chalk
+        .hex("#eb5939")
+        .bold("██║╚██╗██║ ██╔██╗    ██║        ██║   ██║██╔══╝  ██║╚██╗██║") +
+      chalk.hex("#eb5939").bold("     ║"),
   );
   console.log(
     chalk.hex("#eb5939").bold("  ║     ") +
-    chalk
-      .hex("#eb5939")
-      .bold("██║ ╚████║██╔╝ ██╗   ██║███████╗╚██████╔╝███████╗██║ ╚████║") +
-    chalk.hex("#eb5939").bold("     ║")
+      chalk
+        .hex("#eb5939")
+        .bold("██║ ╚████║██╔╝ ██╗   ██║███████╗╚██████╔╝███████╗██║ ╚████║") +
+      chalk.hex("#eb5939").bold("     ║"),
   );
   console.log(
     chalk.hex("#eb5939").bold("  ║     ") +
-    chalk
-      .hex("#eb5939")
-      .bold("╚═╝  ╚═══╝╚═╝  ╚═╝   ╚═╝╚══════╝ ╚═════╝ ╚══════╝╚═╝  ╚═══╝") +
-    chalk.hex("#eb5939").bold("     ║")
+      chalk
+        .hex("#eb5939")
+        .bold("╚═╝  ╚═══╝╚═╝  ╚═╝   ╚═╝╚══════╝ ╚═════╝ ╚══════╝╚═╝  ╚═══╝") +
+      chalk.hex("#eb5939").bold("     ║"),
   );
   console.log(
     chalk
       .hex("#eb5939")
       .bold(
-        "  ║                                                                     ║"
-      )
+        "  ║                                                                     ║",
+      ),
   );
   console.log(
     chalk
       .hex("#eb5939")
       .bold(
-        "  ╚═════════════════════════════════════════════════════════════════════╝"
-      )
+        "  ╚═════════════════════════════════════════════════════════════════════╝",
+      ),
   );
   console.log("\n");
 };
@@ -482,12 +482,12 @@ export default function Home() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-between p-24">
       <h1 className="text-4xl font-bold">Welcome to ${path.basename(
-      projectPath
-    )}</h1>
+        projectPath,
+      )}</h1>
     </div>
   );
 }
-`
+`,
   );
 
   // const cssPath = path.join(projectPath, 'src/app/globals.css');
@@ -513,7 +513,7 @@ async function setupPrisma(projectPath: string, deps: DependencyCollector) {
   await fs.ensureDir(path.join(projectPath, "prisma"));
   await fs.writeFile(
     path.join(projectPath, "prisma/schema.prisma"),
-    prismaSchema
+    prismaSchema,
   );
 
   // Write prisma.config.ts (required for Prisma 7)
@@ -545,7 +545,7 @@ async function setupDrizzle(projectPath: string, deps: DependencyCollector) {
   // drizzle.config.ts
   await fs.writeFile(
     path.join(projectPath, "drizzle.config.ts"),
-    drizzleConfig
+    drizzleConfig,
   );
 
   // src/db/schema.ts
@@ -575,7 +575,7 @@ async function setupReactQuery(projectPath: string, deps: DependencyCollector) {
   await fs.ensureDir(path.join(projectPath, "src/components/providers"));
   await fs.writeFile(
     path.join(projectPath, "src/components/providers/query-provider.tsx"),
-    queryProvider
+    queryProvider,
   );
 
   spinner.succeed("React Query setup complete");
@@ -595,7 +595,7 @@ async function setupAxios(projectPath: string, deps: DependencyCollector) {
 async function setupUI(
   projectPath: string,
   ui: string,
-  deps: DependencyCollector
+  deps: DependencyCollector,
 ) {
   if (ui === "none") return;
   const spinner = ora(`Setting up UI (${ui})...`).start();
@@ -618,7 +618,7 @@ import { twMerge } from "tailwind-merge"
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
-`
+`,
     );
   }
 
@@ -630,13 +630,12 @@ export function cn(...inputs: ClassValue[]) {
     const configExists = await fs.pathExists(tailwindConfigPath);
 
     if (!configExists) {
-      // Assuming Tailwind v4 if config is missing
       // 1. Create hero.ts
       await fs.writeFile(
-        path.join(projectPath, "hero.ts"),
+        path.join(projectPath, "app/hero.ts"),
         `import { heroui } from "@heroui/react";
 
-export default heroui();`
+export default heroui();`,
       );
 
       // 2. Configure globals.css for v4
@@ -650,7 +649,7 @@ export default heroui();`
 
 async function setupFramerMotion(
   projectPath: string,
-  deps: DependencyCollector
+  deps: DependencyCollector,
 ) {
   deps.addDep("framer-motion");
 }
@@ -672,21 +671,21 @@ async function setupExamples(projectPath: string, config: ProjectConfig) {
     await fs.ensureDir(path.join(projectPath, "src/app/api/posts"));
     await fs.writeFile(
       path.join(projectPath, "src/app/api/posts/route.ts"),
-      exampleApiHandler(config.orm)
+      exampleApiHandler(config.orm),
     );
 
     // Dynamic API Route ([id])
     await fs.ensureDir(path.join(projectPath, "src/app/api/posts/[id]"));
     await fs.writeFile(
       path.join(projectPath, "src/app/api/posts/[id]/route.ts"),
-      exampleApiIdHandler(config.orm)
+      exampleApiIdHandler(config.orm),
     );
 
     // Page
     await fs.ensureDir(path.join(projectPath, "src/app/posts"));
     await fs.writeFile(
       path.join(projectPath, "src/app/posts/page.tsx"),
-      examplePage(config.reactQuery, config.axios)
+      examplePage(config.reactQuery, config.axios),
     );
   }
 
@@ -710,7 +709,7 @@ export default function AuthPage() {
 
     await fs.writeFile(
       path.join(projectPath, "src/app/auth/page.tsx"),
-      pageContent
+      pageContent,
     );
   }
 }
@@ -720,7 +719,7 @@ async function setupProviders(projectPath: string, config: ProjectConfig) {
   await fs.ensureDir(path.join(projectPath, "src/components"));
   await fs.writeFile(
     path.join(projectPath, "src/components/providers.tsx"),
-    providersComponent(config)
+    providersComponent(config),
   );
 
   // Dynamic Home Page Generation
@@ -747,7 +746,7 @@ async function setupProviders(projectPath: string, config: ProjectConfig) {
       // We overwrite the existing page.tsx
       await fs.writeFile(
         path.join(projectPath, "src/app/page.tsx"),
-        homePageContent
+        homePageContent,
       );
     }
   }
@@ -770,7 +769,7 @@ node_modules
 npm-debug.log
 README.md
 .next
-.git`
+.git`,
     );
   }
 
@@ -778,7 +777,7 @@ README.md
     await fs.ensureDir(path.join(projectPath, ".github/workflows"));
     await fs.writeFile(
       path.join(projectPath, ".github/workflows/ci.yml"),
-      ciWorkflow
+      ciWorkflow,
     );
   }
 
@@ -808,7 +807,7 @@ async function setupQuality(projectPath: string, deps: DependencyCollector) {
   await fs.ensureDir(path.join(projectPath, ".husky"));
   await fs.writeFile(
     path.join(projectPath, ".husky/pre-commit"),
-    "npx lint-staged\n"
+    "npx lint-staged\n",
   );
 
   spinner.succeed("Code Quality tools setup complete");
@@ -817,7 +816,7 @@ async function setupQuality(projectPath: string, deps: DependencyCollector) {
 async function setupTesting(
   projectPath: string,
   config: ProjectConfig,
-  deps: DependencyCollector
+  deps: DependencyCollector,
 ) {
   const spinner = ora("Setting up Testing environment...").start();
 
@@ -832,7 +831,7 @@ async function setupTesting(
 
     await fs.writeFile(
       path.join(projectPath, "vitest.config.ts"),
-      vitestConfig
+      vitestConfig,
     );
     await fs.writeFile(path.join(projectPath, "vitest.setup.ts"), vitestSetup);
 
@@ -846,7 +845,7 @@ async function setupTesting(
     await fs.ensureDir(path.join(projectPath, "__tests__"));
     await fs.writeFile(
       path.join(projectPath, "__tests__/page.test.tsx"),
-      exampleTest
+      exampleTest,
     );
   }
 
@@ -855,13 +854,13 @@ async function setupTesting(
 
     await fs.writeFile(
       path.join(projectPath, "playwright.config.ts"),
-      playwrightConfig
+      playwrightConfig,
     );
 
     await fs.ensureDir(path.join(projectPath, "e2e"));
     await fs.writeFile(
       path.join(projectPath, "e2e/example.spec.ts"),
-      exampleE2E
+      exampleE2E,
     );
 
     // Add e2e script
@@ -877,7 +876,7 @@ async function setupTesting(
 async function setupStorybook(
   projectPath: string,
   pm: PackageManager,
-  deps: DependencyCollector
+  deps: DependencyCollector,
 ) {
   const spinner = ora("Setting up Storybook...").start();
 
@@ -887,7 +886,7 @@ async function setupStorybook(
     await runCommand(
       dlx.command,
       [...dlx.args, "storybook@latest", "init", "--yes", "--skip-install"],
-      projectPath
+      projectPath,
     );
 
     // Install dependencies manually
@@ -900,9 +899,9 @@ async function setupStorybook(
     console.log(
       chalk.yellow(
         "\nTo set up Storybook manually, run:\n" +
-        `  cd ${path.basename(projectPath)}\n` +
-        `  npx storybook@latest init\n`
-      )
+          `  cd ${path.basename(projectPath)}\n` +
+          `  npx storybook@latest init\n`,
+      ),
     );
   }
 }
@@ -911,14 +910,14 @@ async function setupDocumentation(
   projectPath: string,
   config: ProjectConfig,
   pm: PackageManager,
-  projectName: string
+  projectName: string,
 ) {
   const spinner = ora("Generating documentation...").start();
 
   // README
   await fs.writeFile(
     path.join(projectPath, "README.md"),
-    generateReadme(projectName, pm, config)
+    generateReadme(projectName, pm, config),
   );
 
   // LICENSE
@@ -928,12 +927,12 @@ async function setupDocumentation(
   if (config.license === "MIT") {
     await fs.writeFile(
       path.join(projectPath, "LICENSE"),
-      mitLicense(year, author)
+      mitLicense(year, author),
     );
   } else if (config.license === "Apache") {
     await fs.writeFile(
       path.join(projectPath, "LICENSE"),
-      apacheLicense(year, author)
+      apacheLicense(year, author),
     );
   }
 
@@ -943,7 +942,7 @@ async function setupDocumentation(
 async function setupAuth(
   projectPath: string,
   config: ProjectConfig,
-  deps: DependencyCollector
+  deps: DependencyCollector,
 ) {
   const spinner = ora("Setting up Authentication...").start();
 
@@ -955,11 +954,11 @@ async function setupAuth(
     await fs.writeFile(path.join(projectPath, "src/lib/auth.ts"), nextAuthFile);
 
     await fs.ensureDir(
-      path.join(projectPath, "src/app/api/auth/[...nextauth]")
+      path.join(projectPath, "src/app/api/auth/[...nextauth]"),
     );
     await fs.writeFile(
       path.join(projectPath, "src/app/api/auth/[...nextauth]/route.ts"),
-      nextAuthApiRoute
+      nextAuthApiRoute,
     );
 
     // Env
@@ -971,7 +970,7 @@ async function setupAuth(
     // Middleware
     await fs.writeFile(
       path.join(projectPath, "src/middleware.ts"),
-      clerkMiddleware
+      clerkMiddleware,
     );
 
     // Env
@@ -993,7 +992,7 @@ async function setupForms(projectPath: string, deps: DependencyCollector) {
   await fs.ensureDir(path.join(projectPath, "src/components/examples"));
   await fs.writeFile(
     path.join(projectPath, "src/components/examples/contact-form.tsx"),
-    exampleForm
+    exampleForm,
   );
 
   spinner.succeed("Forms & Validation setup complete");
@@ -1015,7 +1014,7 @@ async function setupIntl(projectPath: string, deps: DependencyCollector) {
   // Middleware
   await fs.writeFile(
     path.join(projectPath, "src/middleware.ts"),
-    intlMiddleware
+    intlMiddleware,
   );
 
   spinner.succeed("Internationalization setup complete");
@@ -1026,10 +1025,7 @@ async function setupOrval(projectPath: string, deps: DependencyCollector) {
 
   deps.addDevDep("orval");
 
-  await fs.writeFile(
-    path.join(projectPath, "orval.config.ts"),
-    orvalConfig
-  );
+  await fs.writeFile(path.join(projectPath, "orval.config.ts"), orvalConfig);
 
   // Add gen script
   const packageJsonPath = path.join(projectPath, "package.json");

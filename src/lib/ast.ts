@@ -12,7 +12,7 @@ export async function addProviderToLayout(projectPath: string) {
 
   // 1. Add Import
   const hasImport = sourceFile.getImportDeclaration(
-    (decl) => decl.getModuleSpecifierValue() === "@/components/providers"
+    (decl) => decl.getModuleSpecifierValue() === "@/components/providers",
   );
 
   if (!hasImport) {
@@ -37,7 +37,7 @@ export async function addProviderToLayout(projectPath: string) {
   const exportDefault = sourceFile.getDefaultExportSymbol();
   if (exportDefault) {
     const funcDecl = sourceFile.getFunction(
-      exportDefault.getName() || "RootLayout"
+      exportDefault.getName() || "RootLayout",
     ); // Often unnamed default, need to handle that.
     // Actually sourceFile.getDefaultExportSymbol() returns symbol.
     // sourceFile.getExportedDeclarations() might be better or finding the function that is default exported.
@@ -98,7 +98,7 @@ export async function configureTailwindForHeroUI(projectPath: string) {
   // 1. Add Import
   // import {heroui} from '@heroui/react';
   const herouiImport = sourceFile.getImportDeclaration(
-    (decl) => decl.getModuleSpecifierValue() === "@heroui/react"
+    (decl) => decl.getModuleSpecifierValue() === "@heroui/react",
   );
 
   if (!herouiImport) {
@@ -111,7 +111,7 @@ export async function configureTailwindForHeroUI(projectPath: string) {
   // 2. Add Plugin
   // plugins: [heroui()]
   const defaultExport = sourceFile.getExportAssignment(
-    (d) => !d.isExportEquals()
+    (d) => !d.isExportEquals(),
   );
   if (defaultExport) {
     // We expect `export default config;` and `const config: Config = { ... }`
@@ -121,7 +121,7 @@ export async function configureTailwindForHeroUI(projectPath: string) {
     const configVar = sourceFile.getVariableDeclaration("config");
     if (configVar) {
       const initializer = configVar.getInitializerIfKind(
-        SyntaxKind.ObjectLiteralExpression
+        SyntaxKind.ObjectLiteralExpression,
       );
       if (initializer) {
         // Handle Plugins
@@ -165,7 +165,7 @@ export async function configureTailwindForHeroUI(projectPath: string) {
               .some((e) => e.getText().includes("@heroui/theme"));
             if (!hasTheme) {
               array.addElement(
-                `"./node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}"`
+                `"./node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}"`,
               );
             }
           }
@@ -185,14 +185,15 @@ export async function configureGlobalCssForHeroUI(projectPath: string) {
 
   // Check if it's already configured to avoid duplication
   if (content.includes("@plugin './hero.ts';")) return;
+  if (content.includes('@plugin "./hero.ts";')) return;
 
   // Replace default tailwind import with v4 setup
   // We assume standard create-next-app output which usually starts with directives
   // Or just prepend/replace the top part.
 
   const v4Setup = `@import "tailwindcss";
-@plugin '../../hero.ts';
-@source '../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
+@plugin "./hero.ts";
+@source "../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}";
 @custom-variant dark (&:is(.dark *));
 
 `;
